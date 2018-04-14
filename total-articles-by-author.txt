@@ -1,0 +1,6 @@
+          name          | total
+------------------------+-------
+ Anonymous Contributor  |     1
+ Markoff Chaney         |     1
+ Ursula La Multa        |     4
+ Rudolf von Treppenwitz |     2
