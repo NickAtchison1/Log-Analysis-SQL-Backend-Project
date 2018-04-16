@@ -30,24 +30,40 @@ def total_articles_by_author():
 def get_most_errors():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute('''SELECT t1.error_date, error_percentage||'%' AS error_percentage
+    c.execute('''SELECT
+                    t2.error_date, 
+                    error_percentage||'%' AS error_percentage
+                FROM
+                (
+                SELECT 
+                    t1.error_date, 
+                    round(100 * SUM(t1.error_count) / SUM(views),2) AS error_percentage
+                FROM
+                (
+                    SELECT 
+                        t.error_date, SUM(error_count) AS error_count, 
+                        SUM(error_count + non_error_count) AS views
                     FROM
                     (
-                    SELECT T.error_date, round(100 * SUM(error_count) / SUM(total_status),2) AS error_percentage
-                    FROM
-                    (
-                    SELECT time::DATE AS error_date , 
-                     CASE WHEN status LIKE '4%'
-                     THEN 1
-                     ELSE 0
-                    END AS error_count,
-                    COUNT(status) AS total_status
+                    SELECT 
+                        time::DATE AS error_date , 
+                        CASE WHEN status LIKE '4%'
+                        THEN 1
+                        ELSE 0
+                        END AS error_count,
+                
+                        CASE WHEN status NOT LIKE '4%'
+                        THEN 1 
+                        ELSE 0
+                        END AS non_error_count
                     FROM LOG
-                    GROUP BY time, status
+                
                     )T
-                    GROUP BY 1
-                    )t1
-                    WHERE t1.error_percentage > 1''')
+                GROUP BY 1
+                )t1
+                GROUP BY 1
+                )t2
+                WHERE t2.error_percentage > 1''')
     error_data = c.fetchall()
     db.close()
     return error_data
