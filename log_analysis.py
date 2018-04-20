@@ -9,7 +9,6 @@ def get_most_popular_articles():
     c.execute('''select s.title, sum(s.views) as views
                     from 
                     (select ar.title, count(ar.title) as views
-                        --from authors au
                         from articles ar
                         join log 
                         on ar.slug = right(path, length(path) - 9)
