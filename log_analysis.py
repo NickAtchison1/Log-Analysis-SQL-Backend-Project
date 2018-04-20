@@ -6,10 +6,19 @@ DBNAME = "news"
 def get_most_popular_articles():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute('''select path, count(path)
-                  from log
-                  group by path
-                  order by count(path) desc''')
+    c.execute('''select s.title, sum(s.views) as views
+                    from 
+                    (select ar.title, count(ar.title) as views
+                        --from authors au
+                        from articles ar
+                        join log 
+                        on ar.slug = right(path, length(path) - 9)
+                        group by ar.title
+                        order by 2 desc
+                    )s
+                    group by s.title
+                    order by 2 desc
+                    limit 3''')
     most_popular_articles = c.fetchall()
     db.close()
     return most_popular_articles
@@ -17,12 +26,19 @@ def get_most_popular_articles():
 def total_articles_by_author():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute('''select au.name,
-                 count(ar.title) as total
-                 from authors au
-                 join articles ar
-                 on au.id = ar.author
-                 group by au.name''')
+    c.execute('''select s.name, sum(s.views) as views
+                        from 
+                        (select au.name, count(path) as views
+                            from authors au
+                            join articles ar
+                            on au.id  = ar.author
+                            join log 
+                            on ar.slug = right(path, length(path) - 9)
+                            group by au.name
+                            order by 2 desc
+                        )s
+                        group by s.name
+                        order by 2 desc;''')
     total_by_author = c.fetchall()
     db.close()
     return total_by_author
