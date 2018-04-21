@@ -13,20 +13,10 @@ Clone or download from github
 ## Running the Application
 
 Once installed, cd into the log-analysis directory.
-To see the results of the SQL queries, open log_analysis.py.
-Go to the bottom of the file and uncomment any or all of the print statments.
+then run the following command:
+**If only python 3 is installed:**
+`python log_analysis.py`
 
-`#print(get_most_popular_articles())`
-
-`print(get_most_popular_articles())`
-
-
-`#print(total_articles_by_author())`
-
-`print(total_articles_by_author())`
-
-
-`#print(get_most_errors())`
-
-`print(get_most_errors())`
+**If both python 2 and 3 are installed:**
+`python3 log_analysid.py`
 
