@@ -99,6 +99,9 @@ def get_most_errors():
 
 
 def display_results():
+
+    """Returns formatted results of the functions
+    in this file"""
     popular_article_result = get_most_popular_articles()
     print("3 most popular articles:")
     print("________________________")
