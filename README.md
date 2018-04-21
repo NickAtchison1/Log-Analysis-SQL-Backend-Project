@@ -21,5 +21,5 @@ then run the following command:
 
 **If both python 2 and 3 are installed:**
 
-`python3 log_analysid.py`
+`python3 log_analysis.py`
 
